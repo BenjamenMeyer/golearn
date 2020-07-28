@@ -6,15 +6,15 @@ import (
 )
 
 type FieldObject struct {
-	Index   uint32
-	Random  uint64
+	Index      uint32
+	Random     uint64
 	Attributes []string
 }
 
 func New(index uint32) *FieldObject {
 	fielder := &FieldObject{
-		Index: index,
-		Random: rand.Uint64(),
+		Index:      index,
+		Random:     rand.Uint64(),
 		Attributes: make([]string, 10),
 	}
 	return fielder

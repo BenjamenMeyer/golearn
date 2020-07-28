@@ -73,21 +73,21 @@ func Unmarshal(data []byte) *FieldObject {
 
 	var offset int = 0
 	// first 4 byte
-	fielder.Index = binary.BigEndian.Uint32(data[offset:offset + 4])
+	fielder.Index = binary.BigEndian.Uint32(data[offset : offset+4])
 	offset += 4
 	// next 8 bytes
-	fielder.Random = binary.BigEndian.Uint64(data[offset:offset + 8])
+	fielder.Random = binary.BigEndian.Uint64(data[offset : offset+8])
 	offset += 8
 	// next 2 bytes
-	attributeCount := binary.BigEndian.Uint16(data[offset:offset+2])
+	attributeCount := binary.BigEndian.Uint16(data[offset : offset+2])
 
 	for index := uint16(0); index < attributeCount; index++ {
 		// next 2 bytes - length
-		attributeDataLength := binary.BigEndian.Uint16(data[offset:offset+2])
+		attributeDataLength := binary.BigEndian.Uint16(data[offset : offset+2])
 		offset += 2
 
 		// extract the attribute string
-		data := data[offset:offset+int(attributeDataLength)]
+		data := data[offset : offset+int(attributeDataLength)]
 		// add the length and an extra for the null terminator
 		offset += int(attributeDataLength) + 1
 
