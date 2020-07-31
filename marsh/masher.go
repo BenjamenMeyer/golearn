@@ -1,6 +1,7 @@
 package marsh
 
 import (
+	"bytes"
 	"encoding/binary"
 )
 
@@ -97,4 +98,23 @@ func Unmarshal(data []byte) *FieldObject {
 	}
 
 	return fielder
+}
+
+func (fielder *FieldObject) StreamMarshal() ([]byte, error) {
+	result := new(bytes.Buffer)
+	err := binary.Write(result, binary.BigEndian, fielder)
+	if err != nil {
+		return result.Bytes(), err
+	} else {
+		return nil, err
+	}
+}
+
+func (fielder *FieldObject) StreamUnmarshal(data []byte) (*FieldObject, error) {
+	fielder = &FieldObject{}
+
+	buffer := bytes.NewBuffer(data)
+
+	err := binary.Read(buffer, binary.BigEndian, fielder)
+	return fielder, err
 }

@@ -37,21 +37,40 @@ func run(w io.Writer, args []string) (return_value int) {
 
 	fmt.Sprintf("Index: %d - Random: %d", fields.Index, fields.Random)
 
+	// verify the Comparison function fails against an uninitiated object
+	if true == fields.Compare(marsh.New(rand.Uint32())) {
+		fmt.Sprintf("Bad Comparison")
+		return_value = 2
+		return
+	}
+
 	marshalledData := fields.Marshal()
 
 	unmarshalled := marsh.Unmarshal(marshalledData)
 
 	if false == fields.Compare(unmarshalled) {
 		fmt.Sprintf("Mis-match")
-		return_value = 2
+		return_value = 3
 		return
 	}
 
-	// verify the Comparison function fails against an uninitiated object
-	if true == fields.Compare(marsh.New(rand.Uint32())) {
-		fmt.Sprintf("Bad Comparison")
-		return_value = 3
-		return
+	streamMarshalled, umErr := fields.StreamMarshal()
+	if umErr != nil {
+		streamUnmarshalled, unmErr := fields.StreamUnmarshal(streamMarshalled)
+
+		if unmErr != nil {
+			if false == fields.Compare(streamUnmarshalled) {
+				fmt.Sprintf("Mis-match")
+				return_value = 4
+				return
+			}
+		} else {
+			fmt.Sprintf("Failed to stream unmarshall the data: %s", unmErr)
+			return_value = 5
+		}
+	} else {
+		fmt.Sprintf("Failed to stream marshall the data: %s", umErr)
+		return_value = 6
 	}
 
 	// reached the end
